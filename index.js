@@ -2,39 +2,15 @@ const express = require("express");
 
 const app = express();
 
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
+
+
 app.get('/', (req, res) => {
     res.send("Server response on / route");
 })
 
-let cards = [
-    {
-        id: 1,
-        pinCode: 1234,
-        cartNumber: "4832121234346565"
-    },
-    {
-        id: 2,
-        pinCode: 2345,
-        cartNumber: "2343465654832121"
-    },
-    {
-        id: 3,
-        pinCode: 3456,
-        cartNumber: "4843236546532121"
-    },
-    {
-        id: 4,
-        pinCode: 4567,
-        cartNumber: "1234346564832125"
-    },
-    {
-        id: 5,
-        pinCode: 5678,
-        cartNumber: "4834345656212123"
-    }
-];
-
-// TASK EXPRESS MODULE 5.3
+// TASK EXPRESS MODULE 5.2
 app.get('/employees', (req, res) => {
     let employees = [
         {
@@ -70,9 +46,38 @@ app.get('/client', (req, res) => {
     res.send("Bu marşrut müştərilər üçün cavabdehdir");
 })
 
-// TASK EXPRESS MODULE 5.4
+// TASK EXPRESS MODULE 5.3
 
 //teqdimat
+
+let cards = [
+    {
+        id: 1,
+        pinCode: 1234,
+        cartNumber: "4832121234346565"
+    },
+    {
+        id: 2,
+        pinCode: 2345,
+        cartNumber: "2343465654832121"
+    },
+    {
+        id: 3,
+        pinCode: 3456,
+        cartNumber: "4843236546532121"
+    },
+    {
+        id: 4,
+        pinCode: 4567,
+        cartNumber: "1234346564832125"
+    },
+    {
+        id: 5,
+        pinCode: 5678,
+        cartNumber: "4834345656212123"
+    }
+];
+
 app.get('/cards', (req, res) => {
     res.json(cards);
 })
@@ -132,11 +137,48 @@ app.get('/store/:id', (req, res) => {
 
     if (!product) {
         res.status(404).send("Product not found!");
-    } 
+    }
     else {
         res.status(200).json(product);
     }
 })
+
+
+// TASK EXPRESS MODULE 5.4
+
+//teqdimat
+let users = [];
+
+app.post('/users', function (req, res) {
+    users.push(req.body);
+    res.json(req.body);
+});
+
+app.put('/users/:id', function (req, res) {
+    const id = parseInt(req.params.id);
+    const usersIndex = users.findIndex((u) => u.id === id);
+
+    if(usersIndex !== -1)
+    {
+        const oldUser = users[usersIndex];
+        users[usersIndex] = {...oldUser, ...req.body};
+        res.status(200).json(users[usersIndex]);
+    }
+    else{
+        res.status(404).send();
+    }
+});
+
+app.delete('/users/:id', function (req, res) {
+    const id = parseInt(req.params.id);
+    users = users.filter((u) => u.id !== id);
+    res.json(users); 
+});
+
+app.get('/users', function (req, res) {
+    res.json(users);
+});
+
 
 app.listen(3000, () => {
     console.log("Server started on 3000 port.")
